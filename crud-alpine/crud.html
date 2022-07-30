@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <title>Document</title>
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <section
+      class="container"
+      x-data="crudAlpine()"
+      x-init="start()"
+    >
+      <div class="row">
+        <div class="col-md-5">
+          <article class="card mt-5">
+            <div class="card-header">Employees management</div>
+
+            <div class="card-body">
+              <section class="form-group">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  x-model="name"
+                  x-ref="name"
+                  type="text"
+                  name="name"
+                  placeholder="Employee name"
+                  class="form-control"
+                  required
+                />
+                <small id="helpId" class="form-text text-muted"
+                  >Write the employee name</small
+                >
+              </section>
+
+              <section class="form-group">
+                <label for="email" class="form-label"
+                  >Email</label
+                >
+                <input
+                  x-model="email"
+                  x-ref="email"
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  placeholder="Employee name"
+                  required
+                />
+                <small id="helpId" class="form-text text-muted"
+                  >Write your email address</small
+                >
+              </section>
+
+              <div class="btn-group" role="group" aria-label="">
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  @click="action('?insertar=1')"
+                  x-ref="btnAdd"
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-info"
+                  x-ref="btnEdit"
+                  @click="action('?actualizar=1')"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="col-md-7">
+          <br /><br />
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template
+                x-if="loadData"
+                x-for="employee in employees"
+                :key="employee.id"
+              >
+                <tr>
+                  <td x-text="employee.id"></td>
+                  <td x-text="employee.nombre"></td>
+                  <td x-text="employee.correo"></td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <button
+                        @click="selectRecord(employee)"
+                        type="button"
+                        class="btn btn-primary"
+                      >
+                        Select
+                      </button>
+                      <button
+                        @click="deleteEmployee(employee)"
+                        type="button"
+                        class="btn btn-danger"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      function crudAlpine() {
+        return {
+          id: null,
+          name: '',
+          email: '',
+          employees: [],
+          url: 'http://localhost/api-alpine/',
+          loadData: false,
+          start: function () {
+            this.read();
+
+            /* active and disabled btn */
+            this.$refs.btnAdd.disabled = false;
+            this.$refs.btnEdit.disabled = true;
+
+            /* clean fields */
+            this.name = '';
+            this.email = '';
+
+            this.$watch('name', () => {
+              this.$refs.name.classList.remove('is-invalid');
+            });
+            this.$watch('email', () => {
+              this.$refs.email.classList.remove('is-invalid');
+            });
+          },
+          deleteEmployee: async function (employeeInfo) {
+            this.endPoint(`?borrar=${employeeInfo.id}`, null);
+          },
+          action: async function (urlAction) {
+            if (this.validateFields()) {
+              const sendData = {
+                method: 'POST',
+                body: JSON.stringify({
+                  id: this.id,
+                  nombre: this.name,
+                  correo: this.email,
+                }),
+              };
+
+              this.endPoint(urlAction, sendData);
+            }
+          },
+          selectRecord: function (employeeSelected) {
+            /* disable & active btn */
+            this.$refs.btnAdd.disabled = true;
+            this.$refs.btnEdit.disabled = false;
+
+            this.id = employeeSelected.id;
+            this.name = employeeSelected.nombre;
+            this.email = employeeSelected.correo;
+          },
+          endPoint: async function (urlAction, methods) {
+            try {
+              await fetch(`${this.url}${urlAction}`, methods);
+
+              this.start();
+
+              //  load new data
+              this.read();
+            } catch (error) {
+              console.error(error);
+            }
+          },
+          read: async function () {
+            const res = await fetch(this.url);
+            const data = await res.json();
+
+            this.loadData = data[0].id !== undefined;
+
+            if (this.loadData) {
+              this.employees = data;
+            }
+          },
+          validateFields: function () {
+            if (this.name.length && this.email.length) {
+              return true;
+            } else {
+              this.$refs.name.classList.add('is-invalid');
+              this.$refs.email.classList.add('is-invalid');
+              return false;
+            }
+          },
+        };
+      }
+    </script>
+  </body>
+</html>

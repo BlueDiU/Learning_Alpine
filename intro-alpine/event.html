@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Document</title>
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <div
+      x-data="{message: null, open: true}"
+      @resize.window="open = (window.outerWidth > 768) ? true: false"
+    >
+      <!--    <form
+        @submit.prevent="console.log(message)"
+        style="border: 1px solid black"
+      >
+        <input type="text" x-model="message" />
+        <button
+          @click.away="console.log('Haz hecho click fuera')"
+        >
+          Send
+        </button>
+      </form> -->
+      <!-- <input
+        type="text"
+        x-model="message"
+        @keydown.ctrl.a="console.log(message)"
+      /> -->
+      <p x-show="open">
+        Este mensaje solo es para pantallas grandes
+      </p>
+    </div>
+  </body>
+</html>

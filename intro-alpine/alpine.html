@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Intro</title>
+    <style>
+      .hidden {
+        transition: all 0.2s ease-in-out;
+        display: none;
+      }
+    </style>
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+  </head>
+  <body>
+    <!-- Create Alpine component -->
+    <div x-data="data()" x-init="start()">
+      <!-- Create a variable avalible only via component -->
+      <!-- x-bind set attributes basend a javascript expression -->
+      <button :disabled="open" @click="isOpen()">Menu</button>
+
+      <!-- Show prop allow show or hidden a chunk based in js expression -->
+      <nav
+        class="hidden"
+        x-bind:class="{'hidden': !open}"
+        @click.away="close()"
+      >
+        <ul style="border: 1px solid grey">
+          <li>item 1</li>
+          <li>item 2</li>
+          <li>item 3</li>
+          <li>item 4</li>
+        </ul>
+      </nav>
+    </div>
+
+    <script>
+      function data() {
+        /* avoid use array function not work */
+        return {
+          open: null,
+          /* initialize state when the DOM elements load */
+          start() {
+            this.open = false;
+          },
+          isOpen() {
+            this.open = !this.open;
+          },
+          close() {
+            this.open = false;
+          },
+        };
+      }
+    </script>
+  </body>
+</html>

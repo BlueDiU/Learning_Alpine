@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Document</title>
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <div x-data="data()">
+      <h6>Con arreglos</h6>
+      <ul>
+        <template x-for="product in products">
+          <li>
+            <span x-text="product.stock"></span> -
+            <span x-text="product.name"></span>
+          </li>
+        </template>
+      </ul>
+      <h6>Con objectos</h6>
+      <ul>
+        <template x-for="product2 in Object.values(products2)">
+          <li>
+            <span x-text="product2.stock"></span> -
+            <span x-text="product2.name"></span>
+            <template x-if="product2?.stock === 0">
+              <!-- WARNING: We need to return a tag element -->
+              <span> (Sin stock) </span>
+            </template>
+          </li>
+        </template>
+      </ul>
+    </div>
+
+    <script>
+      function data() {
+        return {
+          products: [
+            {
+              id: 1,
+              name: 'Pantalon',
+              stock: 5,
+            },
+            {
+              id: 2,
+              name: 'Camisa',
+              stock: 8,
+            },
+            {
+              id: 3,
+              name: 'Zapatos',
+              stock: 3,
+            },
+            {
+              id: 4,
+              name: 'Bolsillo',
+              stock: 0,
+            },
+          ],
+          products2: {
+            1: {
+              id: 1,
+              name: 'Pantalon',
+              stock: 5,
+            },
+            2: {
+              id: 2,
+              name: 'Camisa',
+              stock: 8,
+            },
+            3: {
+              id: 3,
+              name: 'Zapatos',
+              stock: 3,
+            },
+            4: {
+              id: 4,
+              name: 'Bolsillo',
+              stock: 0,
+            },
+          },
+        };
+      }
+    </script>
+  </body>
+</html>

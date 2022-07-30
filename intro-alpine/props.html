@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Document</title>
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <div x-data="{message: null}">
+      <input type="text" x-model="message" />
+
+      <button @click="$refs.msg.innerText=message">Send</button>
+
+      <!-- get access to DOM element is similar like Ref hoook in react -->
+      <p x-ref="msg"></p>
+    </div>
+  </body>
+</html>
